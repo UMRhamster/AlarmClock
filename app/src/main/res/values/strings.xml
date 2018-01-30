@@ -3,4 +3,8 @@
     <string name="toolBar_title">闹钟</string>
     <string name="morning_chinese">上午</string>
     <string name="afternoon_chinese">下午</string>
+    //闹钟显示
+    <string name="morning">凌晨 12:%1$s 闹钟响</string>
+    <string name="afternoon">中午 12:%1$s 闹钟响</string>
+    <string name="clockTime">%1$d小时%2$d分钟后闹钟响"</string>
 </resources>

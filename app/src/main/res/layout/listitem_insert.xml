@@ -2,17 +2,20 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="60dp"
+    android:clickable="true"
+    android:background="?android:attr/selectableItemBackground">
 
     <TextView
         android:id="@+id/list_roughTime_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/morning_chinese"
-        android:textSize="12sp"
+        android:textSize="10sp"
         android:layout_marginStart="50dp"
         android:layout_marginTop="20dp"
-        android:layout_marginEnd="5dp"/>
+        android:layout_marginEnd="5dp"
+        android:layout_centerVertical="true"/>
     <TextView
         android:id="@+id/list_exactTime_tv"
         android:layout_width="wrap_content"
@@ -28,14 +31,13 @@
         android:layout_below="@+id/list_roughTime_tv"
         android:layout_alignStart="@id/list_roughTime_tv"
         android:text="每天"
-        android:textSize="12sp"
+        android:textSize="10sp"
         />
-
     <Switch
         android:id="@+id/list_control_sh"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@id/list_roughTime_tv"/>
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

@@ -13,34 +13,56 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_marginBottom="8dp"
         android:background="@color/themeColor"
+        app:contentInsetStart="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
-
-        <TextView
-            android:id="@+id/main_tb_tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/toolBar_title"
-            android:textColor="@android:color/white"
-            android:textSize="20sp" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/main_tb_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/toolBar_title"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:layout_centerInParent="true"/>
+            <TextView
+                android:id="@+id/main_edit_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="编辑"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="10dp"/>
+        </RelativeLayout>
     </android.support.v7.widget.Toolbar>
+    <!--浮动按钮添加闹钟-->
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/main_insert_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/insert"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.92" />
     <!--闹钟列表-->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/main_rv"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="?attr/actionBarSize"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="394dp"
+        app:layout_constraintBottom_toTopOf="@+id/main_insert_fab"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/main_tb">
+        app:layout_constraintTop_toBottomOf="@+id/main_tb"
+        app:layout_constraintVertical_bias="0.0">
 
     </android.support.v7.widget.RecyclerView>
 </android.support.constraint.ConstraintLayout>
