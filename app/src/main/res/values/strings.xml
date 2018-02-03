@@ -1,10 +1,24 @@
 <resources>
     <string name="app_name">AlarmClock</string>
     <string name="toolBar_title">闹钟</string>
+    <string name="newClock_title">新建闹钟</string>
     <string name="morning_chinese">上午</string>
     <string name="afternoon_chinese">下午</string>
     //闹钟显示
     <string name="morning">凌晨 12:%1$s 闹钟响</string>
     <string name="afternoon">中午 12:%1$s 闹钟响</string>
+    <string name="lessThanOneMinute">不到1分钟后闹钟响</string>
+    <string name="justMinute">%1$d分钟后闹钟响</string>
     <string name="clockTime">%1$d小时%2$d分钟后闹钟响"</string>
+    <string name="defaultTimeTip">23小时59分钟后闹钟响</string>
+    //
+    <string name="complete">完成</string>
+    <string name="cancel">取消</string>
+    <string name="repetition">重复</string>
+    <string name="non_repetition">不重复</string>
+    <string name="everyDay">每天</string>
+    <string name="tag">标签</string>
+    <string name="ring">铃声</string>
+    <string name="shake">震动</string>
+    <string name="none">无</string>
 </resources>

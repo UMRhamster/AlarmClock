@@ -16,6 +16,7 @@ import com.whut.umrhamster.myapplication.R;
  */
 
 public class CustomDialog extends Dialog implements View.OnClickListener{
+    private String repetition;
     private RelativeLayout relativeLayoutNonRepetition; //不重复
     private RelativeLayout relativeLayoutEveryday;      //每天
     private RelativeLayout relativeLayoutCustomTime;    //自定义时间
@@ -29,8 +30,9 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
     private onEverydayClickListener everydayClickListener;
     private onCustomTimeClickListener customTimeClickListener;
 
-    public CustomDialog(@NonNull Context context) {
+    public CustomDialog(@NonNull Context context, String repetition) {
         super(context,R.style.CustomDialog);//使用自定义主题
+        this.repetition = repetition;
     }
 
     public void setOnNonRepetitionClickListener(onNonRepetitionClickListener nonRepetitionClickListener){
@@ -66,6 +68,13 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
         imageViewNonRepetition = findViewById(R.id.customDialog_non_repetition_iv);
         imageViewEveryday = findViewById(R.id.customDialog_everyday_iv);
         imageViewCustom = findViewById(R.id.customDialog_customTime_iv);
+        if(repetition.equals("不重复")){
+            imageViewNonRepetition.setVisibility(View.VISIBLE);
+        }else if(repetition.equals("每天")){
+            imageViewEveryday.setVisibility(View.VISIBLE);
+        }else {
+            imageViewCustom.setVisibility(View.VISIBLE);
+        }
     }
 
     protected void InitEvent(){
@@ -100,7 +109,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
                 imageViewEveryday.setVisibility(View.INVISIBLE);
                 imageViewCustom.setVisibility(View.VISIBLE);
                 //时间处理
-                customTimeClickListener.onCustomTimeClick();
+                customTimeClickListener.onCustomTimeClick("周一,二,三,四,五");
                 break;
             case R.id.customDialog_cancel:
                 dismiss();
@@ -108,6 +117,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
             default:
                 break;
         }
+        dismiss();
     }
 
     //接口
@@ -118,6 +128,6 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
         void onEveryDayClick();
     }
     public interface onCustomTimeClickListener{
-        void onCustomTimeClick();
+        void onCustomTimeClick(String custom);
     }
 }

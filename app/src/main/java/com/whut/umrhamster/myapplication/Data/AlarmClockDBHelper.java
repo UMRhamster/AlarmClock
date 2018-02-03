@@ -26,11 +26,13 @@ public class AlarmClockDBHelper extends SQLiteOpenHelper {
         String CREATE_TABLE_ALARMCLOCK = "CREATE TABLE "
                 +Alarmmaster.TABLE + "("
                 +Alarmmaster.KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                +Alarmmaster.KEY_ROUGHTIME + " TEXT,"
-                +Alarmmaster.KEY_HOUR + " TEXT,"
-                +Alarmmaster.KEY_MINUTE + " TEXT,"
+                +Alarmmaster.KEY_HOUR + " INTEGER,"
+                +Alarmmaster.KEY_MINUTE + " INTEGER,"
                 +Alarmmaster.KEY_REPETITION + " TEXT,"
-                +Alarmmaster.KEY_STATUS + "TEXT)";
+                +Alarmmaster.KEY_RING + " TEXT,"
+                +Alarmmaster.KEY_SHAKE + " INTEGER,"
+                +Alarmmaster.KEY_TAG + " TEXT,"
+                +Alarmmaster.KEY_STATUS + "INTEGER)";
         sqLiteDatabase.execSQL(CREATE_TABLE_ALARMCLOCK);
     }
 

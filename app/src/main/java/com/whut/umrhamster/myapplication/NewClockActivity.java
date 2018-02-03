@@ -1,34 +1,48 @@
 package com.whut.umrhamster.myapplication;
 
-import android.icu.util.Calendar;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.Calendar;
 
 import com.whut.umrhamster.myapplication.CustomUI.CustomDialog;
+import com.whut.umrhamster.myapplication.CustomUI.CustomEditDialog;
+import com.whut.umrhamster.myapplication.Utils.Utils;
 
-public class NewClockActivity extends AppCompatActivity implements NumberPicker.OnScrollListener, NumberPicker.OnValueChangeListener,View.OnClickListener{
+public class NewClockActivity extends AppCompatActivity implements NumberPicker.OnValueChangeListener,View.OnClickListener{
     //获取系统时间
-    java.util.Calendar calendar;
-    //
+    Calendar calendar;
+    //监听系统时间变化
+    private TimeChangeReceiver timeChangeReceiver;
+    //控件
     private NumberPicker numberPickerRoughTime;
     private NumberPicker numberPickerHour;
-    private NumberPicker numberPickerminute;
+    private NumberPicker numberPickerMinute;
+    private TextView textViewTitle;
+    private TextView textViewTag;
+    private TextView textViewRepetition;
+    private TextView textViewRing;
+    private Switch switchStatus;
     //闹钟时间提示
     private TextView textViewTimeTip;
-    //“重复”功能
-    private RelativeLayout relativeLayoutRepetition;
-    //自定义对话框Dialog
-    CustomDialog customDialog;
-
+    //闹钟设置
+    private RelativeLayout relativeLayoutRepetition;  //“重复”功能
+    private RelativeLayout relativeLayoutTag;         //“标签”功能
+    private RelativeLayout relativeLayoutRing;        //“铃声”功能
+    //闹钟对象
+    private Alarmmaster alarmmaster;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,12 +51,25 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
         InitView();
         //初始化事件
         InitEvent();
-       // InitNumberPicker();
+        //初始化数据
+        InitData();
+        //注册广播，监听分钟变化
+        IntentFilter intentFilter;
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_TIME_TICK);
+        timeChangeReceiver = new TimeChangeReceiver();
+        registerReceiver(timeChangeReceiver,intentFilter);
     }
+    //初始化视图
     protected void InitView(){
         numberPickerRoughTime = findViewById(R.id.newClock_roughTime_np);
         numberPickerHour = findViewById(R.id.newClock_hour_np);
-        numberPickerminute = findViewById(R.id.newClock_minute_np);
+        numberPickerMinute = findViewById(R.id.newClock_minute_np);
+        textViewTitle = findViewById(R.id.newClock_tb_tv);
+        textViewTag = findViewById(R.id.newClock_tag_show_tv);
+        textViewRepetition = findViewById(R.id.newClock_repetition_show_tv);
+        textViewRing = findViewById(R.id.newClock_ring_show_tv);
+        switchStatus = findViewById(R.id.newClock_shake_st);
         //设置上下午选择内容
         numberPickerRoughTime.setDisplayedValues(getResources().getStringArray(R.array.roughTime_display));
         numberPickerRoughTime.setMaxValue(1);
@@ -52,48 +79,63 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
         numberPickerHour.setMaxValue(11);
         numberPickerHour.setMinValue(0);
         //设置分钟选择内容
-        numberPickerminute.setDisplayedValues(getResources().getStringArray(R.array.minute_display));
-        numberPickerminute.setMaxValue(59);
-        numberPickerminute.setMinValue(0);
+        numberPickerMinute.setDisplayedValues(getResources().getStringArray(R.array.minute_display));
+        numberPickerMinute.setMaxValue(59);
+        numberPickerMinute.setMinValue(0);
         //闹钟时间提示
         textViewTimeTip = findViewById(R.id.newClock_timeTip_tv);
-        //“重复”功能
-        relativeLayoutRepetition = findViewById(R.id.newClock_repetition_rl);
+        //闹钟设置
+        relativeLayoutRepetition = findViewById(R.id.newClock_repetition_rl); //“重复”
+        relativeLayoutTag = findViewById(R.id.newClock_tag_rl);               //“标签”
+        relativeLayoutRing = findViewById(R.id.newClock_ring_rl);             //“铃声”
     }
+    //初始化事件
     protected void InitEvent(){
         //上下午选择监听
-        numberPickerRoughTime.setOnScrollListener(this);
         numberPickerRoughTime.setOnValueChangedListener(this);
         //小时选择监听
-        numberPickerHour.setOnScrollListener(this);
         numberPickerHour.setOnValueChangedListener(this);
         //分钟选择监听
-        numberPickerminute.setOnScrollListener(this);
-        numberPickerminute.setOnValueChangedListener(this);
-        //监听重复点击
-        relativeLayoutRepetition.setOnClickListener(this);
+        numberPickerMinute.setOnValueChangedListener(this);
+        //闹钟设置
+        relativeLayoutRepetition.setOnClickListener(this); //“重复”
+        relativeLayoutTag.setOnClickListener(this);        //“标签”
+        relativeLayoutRing.setOnClickListener(this);       //“铃声”
     }
+    //初始化数据
+    protected void InitData(){
+        alarmmaster = (Alarmmaster) getIntent().getSerializableExtra("alarmClock");
+        if(alarmmaster != null){
+            //设置标题为“编辑闹钟”
+            textViewTitle.setText("编辑闹钟");
+            //设置数字选择器
+            NumberPickerSet(alarmmaster.getHour(),alarmmaster.getMinute());
+            //设置
+            TimeTipSet();   //剩余时间设置
+            textViewRepetition.setText(alarmmaster.getRepetition()); //设置重复
+            textViewRing.setText(alarmmaster.getRing());             //设置铃声
+            textViewTag.setText(alarmmaster.getTag());               //设置标签
+            switchStatus.setChecked(alarmmaster.getShake());         //设置震动
+        }else {
+            //初始化数字选择器
+            InitNumberPicker();
+            alarmmaster = new Alarmmaster();
+            alarmmaster.setRepetition(getResources().getString(R.string.non_repetition)); //设置默认不重复
+        }
+    }
+    //初始化时间选择器
     protected void InitNumberPicker(){
         //获取当前系统时间，根据时间设置默认的闹钟时间
-        calendar = java.util.Calendar.getInstance();
-        int hour = calendar.get(java.util.Calendar.HOUR);
-        int minute = calendar.get(java.util.Calendar.MINUTE);
-        calendar.getTimeInMillis();   //毫秒表示
-        System.currentTimeMillis();
-    }
-    @Override
-    public void onScrollStateChange(NumberPicker numberPicker, int i) {
-
+        calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
+        //设置数字选择器
+        NumberPickerSet(hour,minute);
+        textViewTimeTip.setText(getResources().getString(R.string.defaultTimeTip));
     }
 
     @Override
     public void onValueChange(NumberPicker numberPicker, int i, int i1) {
-        //获取系统时间
-        calendar = java.util.Calendar.getInstance();
-        //小时
-        int hour = calendar.get(java.util.Calendar.HOUR);
-        //分钟
-        int minute = calendar.get(java.util.Calendar.MINUTE);
         //上下午切换
         if(numberPicker.getId() == R.id.newClock_hour_np){
             if((i == 10 && i1 ==11) || (i ==11 && i1 ==10)){
@@ -104,41 +146,34 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                 }
             }
         }
-        if(numberPickerHour.getValue() == 11){
-            String string = getResources().getStringArray(R.array.minute_display)[numberPickerminute.getValue()];
-            if(numberPickerRoughTime.getValue() == 0){
-                textViewTimeTip.setText(String.format(getResources().getString(R.string.morning),string));
-            }else{
-                textViewTimeTip.setText(String.format(getResources().getString(R.string.afternoon),string));
-            }
-        }else {
-
-            textViewTimeTip.setText(getResources().getStringArray(R.array.hour_display)[numberPickerHour.getValue()]+"小时"+numberPickerminute.getValue()+"分钟后响铃");
-        }
-        //Toast.makeText(this,,Toast.LENGTH_SHORT).show();
+        TimeTipSet();
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.newClock_repetition_rl:
-                customDialog = new CustomDialog(this);
+                //弹出对话框
+                CustomDialog customDialog = new CustomDialog(this, alarmmaster.getRepetition());
                 customDialog.setOnNonRepetitionClickListener(new CustomDialog.onNonRepetitionClickListener() {
                     @Override
                     public void onNonRepetitionClick() {
-                        Toast.makeText(getApplicationContext(),"nonrepetiton click!",Toast.LENGTH_SHORT).show();
+                        textViewRepetition.setText(getResources().getString(R.string.non_repetition)); //不重复
+                        alarmmaster.setRepetition(getResources().getString(R.string.non_repetition));
                     }
                 });
                 customDialog.setOnEverydayClickListener(new CustomDialog.onEverydayClickListener() {
                     @Override
                     public void onEveryDayClick() {
-                        Toast.makeText(getApplicationContext(),"everyday click!",Toast.LENGTH_SHORT).show();
+                        textViewRepetition.setText(getResources().getString(R.string.everyDay));  //每天
+                        alarmmaster.setRepetition(getResources().getString(R.string.everyDay));
                     }
                 });
                 customDialog.setOnCustomTimeClickListener(new CustomDialog.onCustomTimeClickListener() {
                     @Override
-                    public void onCustomTimeClick() {
-                        Toast.makeText(getApplicationContext(),"customtime click!",Toast.LENGTH_SHORT).show();
+                    public void onCustomTimeClick(String custom) {
+                        textViewRepetition.setText(custom);
+                        alarmmaster.setRepetition("自定义闹钟重复周期");
                     }
                 });
                 //设置弹出位置
@@ -152,8 +187,85 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                 window.setAttributes(lp);
                 customDialog.show();
                 break;
+            case R.id.newClock_tag_rl:
+                CustomEditDialog customEditDialog = new CustomEditDialog(this,textViewTag.getText().toString());
+                customEditDialog.setOnOKClickListener(new CustomEditDialog.onOKClickListener() {
+                    @Override
+                    public void onOKClock(String tag) {
+                        textViewTag.setText(tag);
+                    }
+                });
+                customEditDialog.show();
+                break;
+            case R.id.newClock_ring_rl:
+                startActivity(new Intent(this,RingChooseActivity.class));
+                overridePendingTransition(R.anim.actionsheet_ringchooseactivity_in,R.anim.actionsheet_newclockactivity_out);
+                break;
             default:
                 break;
         }
+    }
+    class TimeChangeReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()){
+                case Intent.ACTION_TIME_TICK:
+                    TimeTipSet();
+                    break;
+            }
+        }
+    }
+    //设置闹钟剩余时间提示
+    public void TimeTipSet(){
+        if(numberPickerHour.getValue() == 11){    //小时为12
+            String minute = getResources().getStringArray(R.array.minute_display)[numberPickerMinute.getValue()]; //得到时间选择器上的分钟
+            if(numberPickerRoughTime.getValue() == 0){
+                //上午
+                textViewTimeTip.setText(String.format(getResources().getString(R.string.morning),minute)); //凌晨12:xx闹钟响
+            }else{
+                //下午
+                textViewTimeTip.setText(String.format(getResources().getString(R.string.afternoon),minute));//中午12:xx闹钟响
+            }
+        }else {
+            //计算出小时和分钟
+            int[] time = Utils.TimeCalculate(numberPickerRoughTime.getValue(),numberPickerHour.getValue(),numberPickerMinute.getValue());
+            if(time[0] == 0){    //剩余0小时
+                if(time[1] == 0){    //剩余0分钟
+                    textViewTimeTip.setText(getResources().getString(R.string.lessThanOneMinute));//不到1分钟后闹钟响
+                }else {
+                    textViewTimeTip.setText(String.format(getResources().getString(R.string.justMinute),time[1]));//xx分钟后闹钟响
+                }
+            }else {
+                textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTime),time[0],time[1]));//xx小时xx分钟后闹钟响
+            }
+        }
+    }
+    //设置时间选择器
+    public void NumberPickerSet(int hour, int minute){
+        if(hour >=12 ){   //下午
+            if(hour > 12){
+                numberPickerHour.setValue(hour-13);
+            }else {
+                numberPickerHour.setValue(11);
+            }
+            numberPickerRoughTime.setValue(1);
+        }else {    //上午
+            if(hour > 0){
+                numberPickerHour.setValue(hour-1);
+            }else {
+                numberPickerHour.setValue(11);
+            }
+            numberPickerRoughTime.setValue(0);
+        }
+        numberPickerMinute.setValue(minute);
+    }
+    @Override
+    protected void onDestroy() {
+        if(timeChangeReceiver != null){
+            unregisterReceiver(timeChangeReceiver);
+            timeChangeReceiver = null;
+        }
+        super.onDestroy();
     }
 }

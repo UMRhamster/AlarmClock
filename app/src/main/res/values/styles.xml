@@ -12,7 +12,7 @@
     <!--自定义dialog-->
     <style name="CustomDialog" parent="android:style/Theme.Dialog">
         <!--背景颜色及和透明程度-->
-        <item name="android:windowBackground">@color/whiteColor</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <!--是否去除标题 -->
         <item name="android:windowNoTitle">true</item>
         <!--是否去除边框-->
@@ -21,5 +21,11 @@
         <item name="android:windowIsFloating">true</item>
         <!--是否模糊-->
         <item name="android:backgroundDimEnabled">true</item>
+        <!--Dialog进出动画-->
+        <item name="android:windowAnimationStyle">@style/ActionSheetCustomDialogAnimation</item>
+    </style>
+    <style name="ActionSheetCustomDialogAnimation" parent="@android:style/Animation.Dialog">
+        <item name="android:windowEnterAnimation">@anim/actionsheet_customdialog_in</item>
+        <item name="android:windowExitAnimation">@anim/actionsheet_customdialog_out</item>
     </style>
 </resources>

@@ -11,7 +11,7 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,AlarmClockAdapter.onItemClickListener{
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<Alarmmaster> alarmmasterList;
@@ -25,11 +25,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         //初始化
         InitView();
-        alarmmasterList.add(new Alarmmaster("上午","1","55","每天"));
-        alarmmasterList.add(new Alarmmaster("上午","6","15","每天"));
-        alarmmasterList.add(new Alarmmaster("下午","1","03","不重复"));
-        alarmmasterList.add(new Alarmmaster("上午","11","00","周一,二"));
-        alarmmasterList.add(new Alarmmaster("上午","12","55","每天"));
+        alarmmasterList.add(new Alarmmaster(1,55,"每天","无铃声",0,"起床",1));
+        alarmmasterList.add(new Alarmmaster(23,15,"每天","无铃声",1,"学习",0));
+        alarmmasterList.add(new Alarmmaster(0,3,"不重复","无铃声",1,"学习",1));
+        alarmmasterList.add(new Alarmmaster(11,0,"周一,二","无铃声",1,"学习",1));
+        alarmmasterList.add(new Alarmmaster(12,55,"每天","无铃声",0,"学习",0));
         alarmClockAdapter.notifyDataSetChanged();
     }
     //初始化视图
@@ -38,9 +38,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         linearLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(linearLayoutManager);
         //数据适配器
-        alarmmasterList = new ArrayList<Alarmmaster>();
+        alarmmasterList = new ArrayList<>();
         alarmClockAdapter = new AlarmClockAdapter(alarmmasterList,this);
         recyclerView.setAdapter(alarmClockAdapter);
+        alarmClockAdapter.setOnItemClickListener(this);
         //新增闹钟
         floatingActionButtonInsert = findViewById(R.id.main_insert_fab);
         floatingActionButtonInsert.setOnClickListener(this);
@@ -50,8 +51,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.main_insert_fab:
-                startActivity(new Intent(this,NewClockActivity.class));
+                Intent intent = new Intent(this,NewClockActivity.class);
+                startActivity(intent);
                 break;
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Intent intent = new Intent(this,NewClockActivity.class);
+        intent.putExtra("alarmClock",alarmmasterList.get(position));
+        startActivity(intent);
     }
 }

@@ -24,7 +24,6 @@ public class AlarmClockRepo {
         SQLiteDatabase sqLiteDatabase = alarmClockDBHelper.getWritableDatabase();
         //
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Alarmmaster.KEY_ROUGHTIME,alarmmaster.getRoughTime());   //粗略时间 上下午
         contentValues.put(Alarmmaster.KEY_HOUR,alarmmaster.getHour());             //小时
         contentValues.put(Alarmmaster.KEY_MINUTE,alarmmaster.getMinute());         //分钟
         contentValues.put(Alarmmaster.KEY_REPETITION,alarmmaster.getRepetition()); //重复
@@ -49,7 +48,6 @@ public class AlarmClockRepo {
         SQLiteDatabase sqLiteDatabase = alarmClockDBHelper.getWritableDatabase();
         //
         ContentValues contentValues = new ContentValues();
-        contentValues.put(Alarmmaster.KEY_ROUGHTIME,alarmmaster.getRoughTime());
         contentValues.put(Alarmmaster.KEY_HOUR,alarmmaster.getHour());
         contentValues.put(Alarmmaster.KEY_MINUTE,alarmmaster.getMinute());
         contentValues.put(Alarmmaster.KEY_REPETITION,alarmmaster.getRepetition());

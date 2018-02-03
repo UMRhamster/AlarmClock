@@ -25,7 +25,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/toolBar_title"
+                android:text="@string/newClock_title"
                 android:textColor="@android:color/white"
                 android:textSize="20sp" />
 
@@ -36,7 +36,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="10dp"
-                android:text="完成"
+                android:text="@string/complete"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
 
@@ -47,7 +47,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
-                android:text="取消"
+                android:text="@string/cancel"
                 android:textColor="@android:color/white"
                 android:textSize="16sp" />
         </RelativeLayout>
@@ -87,7 +87,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="1小时59分钟后闹钟响"
+        android:text="@string/defaultTimeTip"
         android:layout_below="@id/newClock_hour_np"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="5dp"/>
@@ -113,7 +113,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="重复"
+            android:text="@string/repetition"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"/>
         <ImageView
@@ -123,12 +123,13 @@
             android:src="@drawable/right"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@null"/>
         <TextView
             android:id="@+id/newClock_repetition_show_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="不重复"
+            android:text="@string/non_repetition"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/repetition_right"
             android:layout_marginEnd="5dp"/>
@@ -154,7 +155,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="铃声"
+            android:text="@string/ring"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"/>
         <ImageView
@@ -164,12 +165,13 @@
             android:src="@drawable/right"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@null"/>
         <TextView
             android:id="@+id/newClock_ring_show_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="两只老虎"
+            android:text="@string/none"
             android:layout_centerVertical="true"
             android:layout_toStartOf="@id/ring_right"
             android:layout_marginEnd="5dp"/>
@@ -183,9 +185,9 @@
         android:layout_below="@id/newClock_ring_rl"
         android:layout_marginStart="10dp"
         android:layout_marginEnd="10dp"/>
-    <!--稍后提醒-->
+    <!--标签-->
     <RelativeLayout
-        android:id="@+id/newClock_delay_rl"
+        android:id="@+id/newClock_tag_rl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_below="@id/viewThree"
@@ -195,24 +197,58 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="稍后提醒"
+            android:text="@string/tag"
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"/>
         <ImageView
-            android:id="@+id/delay_right"
+            android:id="@+id/tag_right"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:src="@drawable/right"
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"/>
+            android:layout_marginEnd="10dp"
+            android:contentDescription="@null"/>
         <TextView
-            android:id="@+id/newClock_delay_show_tv"
+            android:id="@+id/newClock_tag_show_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10分钟"
+            android:text="@string/none"
             android:layout_centerVertical="true"
-            android:layout_toStartOf="@id/delay_right"
+            android:layout_toStartOf="@id/tag_right"
             android:layout_marginEnd="5dp"/>
     </RelativeLayout>
+    <!--分割线-->
+    <View
+        android:id="@+id/viewFour"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#bfbfbf"
+        android:layout_below="@id/newClock_tag_rl"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"/>
+    <!--震动-->
+    <RelativeLayout
+        android:id="@+id/newClock_shake_rl"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/viewFour"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?android:attr/selectableItemBackground">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/shake"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="10dp"/>
+        <Switch
+            android:id="@+id/newClock_shake_st"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="10dp"/>
+    </RelativeLayout>
+
 </RelativeLayout>
