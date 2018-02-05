@@ -1,5 +1,6 @@
 package com.whut.umrhamster.myapplication.Utils;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.util.Calendar;
@@ -39,5 +40,79 @@ public class Utils {
         time[0] = result/3600;
         time[1] = (result%3600)/60;
         return time;
+    }
+
+    public static int dp2px(Context context, float dipValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dipValue * scale + 0.5f);
+    }
+
+    public static String int2String(int number){
+        switch (number){
+            case 0:
+                return "一,";
+            case 1:
+                return "二,";
+            case 2:
+                return "三,";
+            case 3:
+                return "四,";
+            case 4:
+                return "五,";
+            case 5:
+                return "六,";
+            case 6:
+                return "日,";
+            default:
+                return "";
+        }
+    }
+
+    public static int String2int(String string){
+        switch (string){
+            case "一":
+                return 0;
+            case "二":
+                return 1;
+            case "三":
+                return 2;
+            case "四":
+                return 3;
+            case "五":
+                return 4;
+            case "六":
+                return 5;
+            case "日":
+                return 6;
+            default:
+                return -1;
+        }
+    }
+
+    public static int boolean2int(boolean b){
+        if(b){
+            return 1;
+        }else {
+            return 0;
+        }
+    }
+
+    public static boolean int2boolean(int i){
+        switch (i){
+            case 0:
+                return false;
+            case 1:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static int to24HR(int hour){
+        return hour+12;
+    }
+
+    public static int to12HR(int hour){
+        return hour-12;
     }
 }

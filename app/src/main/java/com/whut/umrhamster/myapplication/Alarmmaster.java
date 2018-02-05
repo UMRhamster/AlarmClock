@@ -1,5 +1,7 @@
 package com.whut.umrhamster.myapplication;
 
+import com.whut.umrhamster.myapplication.Utils.Utils;
+
 import java.io.Serializable;
 
 /**
@@ -23,11 +25,11 @@ public class Alarmmaster implements Serializable{
     public static final String KEY_STATUS = "status";         //闹钟状态 开或关
     /* ******************************************** */
 
-    private int id;
     //private String roughTime;         //粗略时间 上下午
+    //private String exactTime;         //精确时间 时分
+    private int id;
     private int hour;                 //小时
     private int minute;               //分钟
-    //private String exactTime;         //精确时间 时分
     private String repetition;        //重复
     private String ring;              //铃声
     private int shake;                //震动
@@ -123,11 +125,7 @@ public class Alarmmaster implements Serializable{
     }
 
     public boolean getShake() {
-        if(status == 0){
-            return false;
-        }else {
-            return true;
-        }
+        return Utils.int2boolean(shake);
     }
 
     public void setTag(String tag) {
@@ -143,10 +141,6 @@ public class Alarmmaster implements Serializable{
     }
 
     public boolean getStatus() {
-        if(status == 0){
-            return false;
-        }else {
-            return true;
-        }
+        return Utils.int2boolean(status);
     }
 }

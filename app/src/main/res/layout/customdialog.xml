@@ -3,21 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/dialog_cornerbg">
+    android:background="@color/whiteColor">
     <TextView
         android:id="@+id/customDialog_title_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="重复"
+        android:text="@string/repetition"
         android:textColor="@android:color/black"
         android:textSize="17sp"
         android:gravity="center"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"/>
     <View
         android:id="@+id/customDialog_viewOne"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:background="#dbdbdb"
         android:layout_below="@id/customDialog_title_tv"/>
     <!--不重复-->
@@ -32,7 +32,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="不重复"
+            android:text="@string/non_repetition"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:layout_marginStart="16dp"
@@ -47,14 +47,14 @@
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginEnd="20dp"
-            android:visibility="invisible"/>
+            android:visibility="invisible"
+            android:contentDescription="@null"/>
     </RelativeLayout>
     <View
         android:id="@+id/customDialog_viewTwo"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:background="#dbdbdb"
         android:layout_below="@id/customDialog_non_repetition_rl"/>
     <!--每天-->
@@ -69,7 +69,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="每天"
+            android:text="@string/everyDay"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:layout_marginStart="16dp"
@@ -84,14 +84,14 @@
             android:visibility="invisible"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:contentDescription="@null"/>
     </RelativeLayout>
     <View
         android:id="@+id/customDialog_viewThree"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
+        android:layout_height="0.5dp"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:background="#dbdbdb"
         android:layout_below="@id/customDialog_everyday_rl"/>
     <!--自定义时间-->
@@ -106,7 +106,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="自定义"
+            android:text="@string/custom"
             android:textColor="@android:color/black"
             android:textSize="16sp"
             android:layout_marginStart="16dp"
@@ -121,7 +121,8 @@
             android:visibility="invisible"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            android:layout_marginEnd="20dp"/>
+            android:layout_marginEnd="20dp"
+            android:contentDescription="@null"/>
     </RelativeLayout>
     <View
         android:id="@+id/customDialog_viewFour"
@@ -133,7 +134,7 @@
         android:id="@+id/customDialog_cancel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="取消"
+        android:text="@string/cancel"
         android:textSize="16sp"
         android:textColor="@android:color/black"
         android:layout_below="@id/customDialog_viewFour"

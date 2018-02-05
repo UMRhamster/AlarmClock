@@ -17,8 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".NewClockActivity" />
-        <!-- 服务 -->
-        <activity android:name=".RingChooseActivity"></activity>
+        <activity android:name=".RingChooseActivity"/>
     </application>
 
 </manifest>

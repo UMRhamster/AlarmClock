@@ -28,8 +28,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alarmmasterList.add(new Alarmmaster(1,55,"每天","无铃声",0,"起床",1));
         alarmmasterList.add(new Alarmmaster(23,15,"每天","无铃声",1,"学习",0));
         alarmmasterList.add(new Alarmmaster(0,3,"不重复","无铃声",1,"学习",1));
-        alarmmasterList.add(new Alarmmaster(11,0,"周一,二","无铃声",1,"学习",1));
-        alarmmasterList.add(new Alarmmaster(12,55,"每天","无铃声",0,"学习",0));
+        alarmmasterList.add(new Alarmmaster(11,0,"每周一,二,三","无铃声",1,"学习",1));
+        alarmmasterList.add(new Alarmmaster(12,55,"每周二,四,五,六","无铃声",0,"学习",0));
         alarmClockAdapter.notifyDataSetChanged();
     }
     //初始化视图

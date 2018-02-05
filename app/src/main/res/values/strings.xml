@@ -14,11 +14,23 @@
     //
     <string name="complete">完成</string>
     <string name="cancel">取消</string>
+    <string name="ok">确定</string>
     <string name="repetition">重复</string>
     <string name="non_repetition">不重复</string>
     <string name="everyDay">每天</string>
     <string name="tag">标签</string>
     <string name="ring">铃声</string>
     <string name="shake">震动</string>
+    <string name="custom">自定义</string>
+    <string name="addTag">添加标签</string>
     <string name="none">无</string>
+    <string name="monday">每周一</string>
+    <string name="tuesday">每周二</string>
+    <string name="wednesday">每周三</string>
+    <string name="thursday">每周四</string>
+    <string name="friday">每周五</string>
+    <string name="saturday">每周六</string>
+    <string name="sunday">每周日</string>
+
+    <string name="customRepetition">每周%1$s%2$s%3$s%4$s%5$s%6$s%7$s</string>
 </resources>

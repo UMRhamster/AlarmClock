@@ -4,7 +4,10 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -94,6 +97,7 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
                 imageViewCustom.setVisibility(View.INVISIBLE);
                 //事件处理
                 nonRepetitionClickListener.onNonRepetitionClick();
+                dismiss();
                 break;
             case R.id.customDialog_everyday_rl:
                 //显示控制
@@ -102,14 +106,33 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
                 imageViewCustom.setVisibility(View.INVISIBLE);
                 //事件处理
                 everydayClickListener.onEveryDayClick();
+                dismiss();
                 break;
             case R.id.customDialog_customTime_rl:
-                //显示控制
-                imageViewNonRepetition.setVisibility(View.INVISIBLE);
-                imageViewEveryday.setVisibility(View.INVISIBLE);
-                imageViewCustom.setVisibility(View.VISIBLE);
-                //时间处理
-                customTimeClickListener.onCustomTimeClick("周一,二,三,四,五");
+                //C
+                CustomWeekDialog customWeekDialog = new CustomWeekDialog(getContext(),repetition);
+                customWeekDialog.setOnWeekOKClickListener(new CustomWeekDialog.onWeekOKClickListener() {
+                    @Override
+                    public void onWeekOKClick(String week) {
+                        //显示控制
+                        imageViewNonRepetition.setVisibility(View.INVISIBLE);
+                        imageViewEveryday.setVisibility(View.INVISIBLE);
+                        imageViewCustom.setVisibility(View.VISIBLE);
+                        //事件处理
+                        customTimeClickListener.onCustomTimeClick(week);
+                        dismiss();
+                    }
+                });
+                //设置弹出位置
+                Window window = customWeekDialog.getWindow();
+                window.getDecorView().setPadding(0,0,0,0);
+                //window.setGravity(Gravity.BOTTOM);
+                WindowManager.LayoutParams lp = window.getAttributes();
+                lp.dimAmount = 0.5f;
+                lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                lp.gravity = Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL;
+                window.setAttributes(lp);
+                customWeekDialog.show();
                 break;
             case R.id.customDialog_cancel:
                 dismiss();
@@ -117,7 +140,6 @@ public class CustomDialog extends Dialog implements View.OnClickListener{
             default:
                 break;
         }
-        dismiss();
     }
 
     //接口

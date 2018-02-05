@@ -232,10 +232,7 @@
         android:id="@+id/newClock_shake_rl"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/viewFour"
-        android:clickable="true"
-        android:focusable="true"
-        android:background="?android:attr/selectableItemBackground">
+        android:layout_below="@id/viewFour">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

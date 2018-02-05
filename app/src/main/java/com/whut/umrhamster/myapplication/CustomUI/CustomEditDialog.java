@@ -69,7 +69,7 @@ public class CustomEditDialog extends Dialog implements View.OnClickListener{
                         OKClickListener.onOKClock("无");
                     }else {
                         OKClickListener.onOKClock(editTextTag.getText().toString());
-                    }
+                }
                 }
                 dismiss();
                 break;
