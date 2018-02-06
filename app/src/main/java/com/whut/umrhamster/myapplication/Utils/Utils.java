@@ -108,11 +108,32 @@ public class Utils {
         }
     }
 
-    public static int to24HR(int hour){
-        return hour+12;
+    public static String getRoughTime(int hour){
+        if(hour >12){
+            return "下午";
+        }else if(hour == 12){
+            return "中午";
+        }else if(hour == 0){
+            return "凌晨";
+        }else {
+            return "上午";
+        }
     }
 
-    public static int to12HR(int hour){
-        return hour-12;
+    public static String getExactTime(int hour, int minute){
+        StringBuilder stringBuilder = new StringBuilder();
+        if(hour>12){
+            hour = hour -12;
+        }
+        if(hour<10){
+            stringBuilder.append("0");
+        }
+        stringBuilder.append(hour)
+                .append(":");
+        if(minute<10){
+            stringBuilder.append("0");
+        }
+        stringBuilder.append(minute);
+        return stringBuilder.toString();
     }
 }

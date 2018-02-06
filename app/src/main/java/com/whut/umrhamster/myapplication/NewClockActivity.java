@@ -122,7 +122,7 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
             textViewRepetition.setText(alarmmaster.getRepetition()); //设置重复
             textViewRing.setText(alarmmaster.getRing());             //设置铃声
             textViewTag.setText(alarmmaster.getTag());               //设置标签
-            switchShake.setChecked(alarmmaster.getShake());          //设置震动
+            switchShake.setChecked(Utils.int2boolean(alarmmaster.getShake()));          //设置震动
         }else {
             //初始化数字选择器
             InitNumberPicker();

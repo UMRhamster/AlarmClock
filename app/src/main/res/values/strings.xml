@@ -33,4 +33,8 @@
     <string name="sunday">每周日</string>
 
     <string name="customRepetition">每周%1$s%2$s%3$s%4$s%5$s%6$s%7$s</string>
+    <string name="selectedNumber">已选择 %1$d 项</string>
+
+    <item type="id" name="tag_isChecked">0</item>
+    <item type="id" name="tag_position">1</item>
 </resources>

@@ -272,9 +272,6 @@
             android:layout_centerVertical="true"
             android:layout_alignParentEnd="true"
             android:layout_marginEnd="16dp"
-            android:clickable="false"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
             app:stroke_width="2dp"
             app:color_checked="@color/colorAccent"/>
     </RelativeLayout>

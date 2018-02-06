@@ -73,48 +73,6 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
         for(int i =0; i<7; i++){
             relativeLayoutsWeek[i].setOnClickListener(this);
         }
-        smoothCheckBoxesWeek[0].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[0] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[1].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[1] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[2].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[2] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[3].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[3] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[4].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[4] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[5].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[5] = isChecked;
-            }
-        });
-        smoothCheckBoxesWeek[6].setOnCheckedChangeListener(new SmoothCheckBox.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(SmoothCheckBox checkBox, boolean isChecked) {
-                issChecked[6] = isChecked;
-            }
-        });
         //
         textViewCancel.setOnClickListener(this);
         textViewOK.setOnClickListener(this);
@@ -124,8 +82,6 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
         if(!(repetition.equals("不重复") || repetition.equals("每天"))){
             String[] repe = repetition.split("每周|,");
             for(int i=1; i<repe.length; i++){
-//                Log.d("111111",repe[i]);
-//                Log.d("222222",String.valueOf(Utils.String2int(repe[i])));
                 smoothCheckBoxesWeek[Utils.String2int(repe[i])].setChecked(true);
                 issChecked[Utils.String2int(repe[i])] = true;
             }
@@ -136,8 +92,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.customWeekDialog_monday_rl:
-                smoothCheckBoxesWeek[0].toggle();
-                if(smoothCheckBoxesWeek[0].isChecked()){
+                if(!issChecked[0]){
                     smoothCheckBoxesWeek[0].setChecked(true,true);
                     issChecked[0] = true;
                 }else {
@@ -146,8 +101,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_tuesday_rl:
-                smoothCheckBoxesWeek[1].toggle();
-                if(smoothCheckBoxesWeek[1].isChecked()){
+                if(!issChecked[1]){
                     smoothCheckBoxesWeek[1].setChecked(true,true);
                     issChecked[1] = true;
                 }else {
@@ -156,8 +110,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_wednesday_rl:
-                smoothCheckBoxesWeek[2].toggle();
-                if(smoothCheckBoxesWeek[2].isChecked()){
+                if(!issChecked[2]){
                     smoothCheckBoxesWeek[2].setChecked(true,true);
                     issChecked[2] = true;
                 }else {
@@ -166,8 +119,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_thursday_rl:
-                smoothCheckBoxesWeek[3].toggle();
-                if(smoothCheckBoxesWeek[3].isChecked()){
+                if(!issChecked[3]){
                     smoothCheckBoxesWeek[3].setChecked(true,true);
                     issChecked[3] = true;
                 }else {
@@ -176,8 +128,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_friday_rl:
-                smoothCheckBoxesWeek[4].toggle();
-                if(smoothCheckBoxesWeek[4].isChecked()){
+                if(!issChecked[4]){
                     smoothCheckBoxesWeek[4].setChecked(true,true);
                     issChecked[4] = true;
                 }else {
@@ -186,8 +137,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_saturday_rl:
-                smoothCheckBoxesWeek[5].toggle();
-                if (smoothCheckBoxesWeek[5].isChecked()){
+                if(!issChecked[5]){
                     smoothCheckBoxesWeek[5].setChecked(true,true);
                     issChecked[5] = true;
                 }else {
@@ -196,8 +146,7 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
                 }
                 break;
             case R.id.customWeekDialog_sunday_rl:
-                smoothCheckBoxesWeek[6].toggle();
-                if(smoothCheckBoxesWeek[6].isChecked()){
+                if(!issChecked[6]){
                     smoothCheckBoxesWeek[6].setChecked(true,true);
                     issChecked[6] = true;
                 }else {
@@ -223,10 +172,6 @@ public class CustomWeekDialog extends Dialog implements View.OnClickListener{
             default:
                 break;
         }
-        for(int i=0;i<7;i++){
-            Log.d("123",String.valueOf(issChecked[i]));
-        }
-        Log.d("111","*******************************");
     }
     //接口
     public interface onWeekOKClickListener{
