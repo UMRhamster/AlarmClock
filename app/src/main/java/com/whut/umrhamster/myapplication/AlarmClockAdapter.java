@@ -1,11 +1,17 @@
 package com.whut.umrhamster.myapplication;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -13,6 +19,7 @@ import com.whut.umrhamster.myapplication.CustomUI.SmoothCheckBox;
 import com.whut.umrhamster.myapplication.Utils.Utils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -27,8 +34,9 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
 
     private onItemClickListener ItemClickListener;
     //构造函数
-    public AlarmClockAdapter(List<Alarmmaster> alarmmasterList, Context context){
+    public AlarmClockAdapter(List<Alarmmaster> alarmmasterList, List<Boolean> alarmmasterCheck, Context context){
         this.alarmmasterList = alarmmasterList;
+        this.alarmmasterCheck = alarmmasterCheck;
         this.context = context;
     }
 
@@ -42,9 +50,9 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
-        Log.d("222222222222","bvhooooooolder"+String.valueOf(position));
-        Alarmmaster alarmmaster = alarmmasterList.get(position);
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        //Log.d("222222222222","bvhooooooolder"+String.valueOf(position));
+        final Alarmmaster alarmmaster = alarmmasterList.get(position);
         holder.textViewRoughTime.setText(Utils.getRoughTime(alarmmaster.getHour()));
         holder.textViewExactTime.setText(Utils.getExactTime(alarmmaster.getHour(),alarmmaster.getMinute()));
         holder.textViewRepetition.setText(alarmmaster.getRepetition());
@@ -60,6 +68,22 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
             holder.smoothCheckBoxDelete.setVisibility(View.GONE);
             holder.aSwitchControl.setVisibility(View.VISIBLE);
         }
+        //处理闹钟开关///////////////////////////////////////////////////////////////////////////
+        holder.aSwitchControl.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                Intent intent = new Intent(context,AlarmReceiver.class);
+                intent.setAction("com.whut.umrhamster.alarmclock");
+                intent.putExtra("clockAlarm",alarmmasterList.get(position));
+
+                if(b){
+                    Utils.setAlarmTime(context,alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),intent);
+                }else {
+                    //context.stopService(intent);
+                }
+            }
+        });
+        ///////////////////////////////////////////////////////////////////////////////////////////
     }
 
     private void setItemChecked(int position, boolean isChecked){
@@ -78,6 +102,12 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
     public void onClick(View view) {
         if(ItemClickListener !=null){
             int position = (int)view.getTag();
+            if(!isShow){
+                //如果没有进入多选删除状态，则进行正常的单次点击事件
+                //注意这里使用getTag方法获取position
+                ItemClickListener.onItemClick(view,position);
+                return;
+            }
             //进入多选删除状态的处理
             if(isItemChecked(position)){
                 setItemChecked(position,false);
@@ -86,9 +116,6 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
             }
             notifyItemChanged(position);
             //notifyDataSetChanged();
-            //如果没有进入多选删除状态，则进行正常的单次点击事件
-            //注意这里使用getTag方法获取position
-            ItemClickListener.onItemClick(view,position);
         }
     }
 
@@ -100,15 +127,16 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
             }else {
                 isShow = true;
             }
+            alarmmasterCheck.set((int)view.getTag(),true);
             /////////////暂时这样处理//////////////////////////////////////////
-            alarmmasterCheck = new ArrayList<>();                           //
-            for(int i=0;i<alarmmasterList.size();i++){                      //
-                if(i == (int)view.getTag()){                                //
-                    alarmmasterCheck.add(true);     //长按条目直接为选中状态 //
-                }else {                                                     //
-                    alarmmasterCheck.add(false);                            //
-                }                                                           //
-            }                                                               //
+//            alarmmasterCheck = new ArrayList<>();                           //
+//            for(int i=0;i<alarmmasterList.size();i++){                      //
+//                if(i == (int)view.getTag()){                                //
+//                    alarmmasterCheck.add(true);     //长按条目直接为选中状态 //
+//                }else {                                                     //
+//                    alarmmasterCheck.add(false);                            //
+//                }                                                           //
+//            }                                                               //
             //////////////////////////////////////////////////////////////////
             notifyDataSetChanged();
             ItemClickListener.onItemLongClick(view,(int)view.getTag());
@@ -130,10 +158,6 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
     //进入编辑状态
     public void editStart(){
         isShow = true;
-        alarmmasterCheck = new ArrayList<>();
-        for (int i=0;i<alarmmasterList.size();i++){
-            alarmmasterCheck.add(false);
-        }
         notifyDataSetChanged();
     }
     //获取选中条目数
@@ -168,7 +192,7 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
     }
 
     //item点击事件接口
-    public static interface onItemClickListener{
+    public interface onItemClickListener{
         void onItemClick(View view, int position);
         void onItemLongClick(View view, int position);
     }

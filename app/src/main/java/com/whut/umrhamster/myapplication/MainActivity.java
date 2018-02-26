@@ -1,24 +1,32 @@
 package com.whut.umrhamster.myapplication;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,AlarmClockAdapter.onItemClickListener{
     private RecyclerView recyclerView;
     private LinearLayoutManager linearLayoutManager;
     private List<Alarmmaster> alarmmasterList;
+    private List<Boolean> alarmListChecked; //闹钟选中与否
     private AlarmClockAdapter alarmClockAdapter;
 
     //ToolBar上控件
@@ -31,29 +39,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //test
+//        Calendar calendar = Calendar.getInstance();
+//        Log.d("year",String.valueOf(calendar.get(Calendar.YEAR)));
+//        Log.d("month",String.valueOf(calendar.get(Calendar.MONTH)));
+//        Log.d("day",String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
+//        Log.d("day of week", String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
+//        Log.d("week",String.valueOf(calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH)));
+        //
         //初始化
         InitView();
         InitEvents();
-        //InsertDataForTest();
-        //InitDataFromDataBase();
-        alarmmasterList.add(new Alarmmaster(1,55,"每天","无铃声",0,"起床",1));
-        alarmmasterList.add(new Alarmmaster(23,15,"每天","无铃声",1,"学习",0));
-        alarmmasterList.add(new Alarmmaster(0,3,"不重复","无铃声",1,"学习",1));
-        alarmmasterList.add(new Alarmmaster(11,0,"每周一,二,三","无铃声",1,"学习",1));
-        alarmmasterList.add(new Alarmmaster(12,55,"每周二,四,五,六","无铃声",0,"学习",0));
+        InitDataFromDataBase();
         alarmClockAdapter.notifyDataSetChanged();
-    }
-    public void InsertDataForTest(){
-        LitePal.getDatabase();
-        Alarmmaster alarmmaster = new Alarmmaster();
-        alarmmaster.setHour(15);
-        alarmmaster.setMinute(59);
-        alarmmaster.setTag("学习");
-        alarmmaster.setRepetition("每天");
-        alarmmaster.setRing("无铃声");
-        alarmmaster.setShake(1);
-        alarmmaster.setStatus(1);
-        alarmmaster.save();
     }
     //初始化视图
     private void InitView(){
@@ -62,8 +60,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         recyclerView.setLayoutManager(linearLayoutManager);
         //数据适配器
         alarmmasterList = new ArrayList<>();
-        //////////////////////////////////////test
-        alarmClockAdapter = new AlarmClockAdapter(alarmmasterList,this);
+        alarmListChecked = new ArrayList<>();//闹钟选中与否
+        alarmClockAdapter = new AlarmClockAdapter(alarmmasterList,alarmListChecked,this);
         recyclerView.setAdapter(alarmClockAdapter);
         alarmClockAdapter.setOnItemClickListener(this);
         //新增闹钟
@@ -82,20 +80,40 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void InitDataFromDataBase(){
+        LitePal.getDatabase();
         alarmmasterList.addAll(DataSupport.findAll(Alarmmaster.class));
+        for(int i=0;i<alarmmasterList.size();i++){
+            alarmListChecked.add(false);
+        }
     }
 
     @Override
     public void onClick(View view) {
+        //test for service
         switch (view.getId()){
             case R.id.main_insert_fab:
-                Intent intent = new Intent(this,NewClockActivity.class);
-                startActivity(intent);
+                if (textViewEdit.getText().toString().equals("编辑")){
+                    Intent intent = new Intent(this,NewClockActivity.class);
+                    startActivityForResult(intent,1);
+                    //startActivity(intent);
+                }else {
+                    for(int a = alarmListChecked.size()-1; a >= 0 ; a--){
+                        if(alarmListChecked.get(a)) {
+                            alarmmasterList.get(a).delete();      //删除数据库中的值
+                            alarmmasterList.remove(a);            //删除recycleView中的显示
+                            alarmListChecked.remove(a);           //同时删除同position的选中信息
+                        }
+                        alarmClockAdapter.notifyDataSetChanged();
+                    }
+                }
                 break;
             case R.id.main_edit_tv:
+                //test for service
                 if(textViewEdit.getText().toString().equals("编辑")){
                     alarmClockAdapter.editStart();
                     textViewCancel.setVisibility(View.VISIBLE);
+                    floatingActionButtonInsert.setImageResource(R.drawable.delete);
+                    floatingActionButtonInsert.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.themeColor)));
                     textViewEdit.setText("全选");
                 }else {
                     alarmClockAdapter.allSelected();
@@ -103,10 +121,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textViewTitle.setText(String.format(getResources().getString(R.string.selectedNumber),alarmClockAdapter.getCheckedNumber()));
                 break;
             case R.id.main_cancel_tv:
+                //test for service
                 alarmClockAdapter.cancelDelete();
                 textViewEdit.setText("编辑");
                 textViewTitle.setText("闹钟");
                 textViewCancel.setVisibility(View.GONE);
+                floatingActionButtonInsert.setImageResource(R.drawable.insert);
+                floatingActionButtonInsert.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
+                //取消删除时，恢复所有的选中信息为未选中，即false
+                for(int i = 0; i<alarmListChecked.size();i++){
+                    if(alarmListChecked.get(i)){
+                        alarmListChecked.set(i,false);
+                        alarmClockAdapter.notifyItemChanged(i);
+                    }
+                }
                 break;
             default:
                 break;
@@ -120,7 +148,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else {
             Intent intent = new Intent(this,NewClockActivity.class);
             intent.putExtra("alarmClock",alarmmasterList.get(position));
-            startActivity(intent);
+            //Log.d("position",String.valueOf(position));
+            //Log.d("id",String.valueOf(alarmmasterList.get(position).getId()));
+            intent.putExtra("position",position);
+            startActivityForResult(intent,2);
         }
     }
 
@@ -129,5 +160,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textViewTitle.setText(String.format(getResources().getString(R.string.selectedNumber),alarmClockAdapter.getCheckedNumber()));
         textViewCancel.setVisibility(View.VISIBLE);
         textViewEdit.setText("全选");
+        floatingActionButtonInsert.setImageResource(R.drawable.delete);
+        floatingActionButtonInsert.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.themeColor)));
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 1 & resultCode == 1){
+            //Alarmmaster a = (Alarmmaster) data.getSerializableExtra("editClock");
+            //Log.d("a",String.valueOf(a.getHour()));
+            alarmmasterList.add((Alarmmaster) data.getSerializableExtra("editClock"));
+            alarmListChecked.add(false);
+            alarmClockAdapter.notifyItemChanged(alarmmasterList.size()-1);
+        }else if(requestCode == 2 & resultCode == 2){
+            int position = data.getIntExtra("backPosition",-1);
+            alarmmasterList.set(position,(Alarmmaster) data.getSerializableExtra("editClock"));
+            alarmClockAdapter.notifyItemChanged(position);
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.whut.umrhamster.myapplication;
 
 import com.whut.umrhamster.myapplication.Utils.Utils;
 
+import org.litepal.annotation.Column;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
@@ -29,6 +30,8 @@ public class Alarmmaster extends DataSupport implements Serializable{
 
     //private String roughTime;         //粗略时间 上下午
     //private String exactTime;         //精确时间 时分
+
+    private int id;                   //id
     private int hour;                 //小时
     private int minute;               //分钟
     private String repetition;        //重复
@@ -54,6 +57,14 @@ public class Alarmmaster extends DataSupport implements Serializable{
         this.shake = shake;
         this.tag = tag;
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getHour() {

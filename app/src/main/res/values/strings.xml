@@ -9,7 +9,12 @@
     <string name="afternoon">中午 12:%1$s 闹钟响</string>
     <string name="lessThanOneMinute">不到1分钟后闹钟响</string>
     <string name="justMinute">%1$d分钟后闹钟响</string>
+    <string name="justHour">%1$d小时后闹钟响</string>
+    <string name="justDay">%1$d天后闹钟响</string>
     <string name="clockTime">%1$d小时%2$d分钟后闹钟响"</string>
+    <string name="clockTimeWithDay">%1$d天%2$d小时%3$d分钟后闹钟响"</string>
+    <string name="clockTimeWithDayNoMinute">%1$d天%2$d小时后闹钟响"</string>
+    <string name="clockTimeWithDayNoHour">%1$d天%2$d分钟后闹钟响"</string>
     <string name="defaultTimeTip">23小时59分钟后闹钟响</string>
     //
     <string name="complete">完成</string>
@@ -35,6 +40,6 @@
     <string name="customRepetition">每周%1$s%2$s%3$s%4$s%5$s%6$s%7$s</string>
     <string name="selectedNumber">已选择 %1$d 项</string>
 
-    <item type="id" name="tag_isChecked">0</item>
-    <item type="id" name="tag_position">1</item>
+    <item name="tag_isChecked" type="id">0</item>
+    <item name="tag_position" type="id">1</item>
 </resources>

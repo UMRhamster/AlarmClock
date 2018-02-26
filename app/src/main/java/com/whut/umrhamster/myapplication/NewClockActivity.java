@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -56,8 +57,7 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
         //初始化数据
         InitData();
         //注册广播，监听分钟变化
-        IntentFilter intentFilter;
-        intentFilter = new IntentFilter();
+        IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_TIME_TICK);
         timeChangeReceiver = new TimeChangeReceiver();
         registerReceiver(timeChangeReceiver,intentFilter);
@@ -167,6 +167,7 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                     public void onNonRepetitionClick() {
                         textViewRepetition.setText(getResources().getString(R.string.non_repetition)); //不重复
                         alarmmaster.setRepetition(getResources().getString(R.string.non_repetition));
+                        TimeTipSet();  //重新设置提示时间
                     }
                 });
                 customDialog.setOnEverydayClickListener(new CustomDialog.onEverydayClickListener() {
@@ -174,6 +175,7 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                     public void onEveryDayClick() {
                         textViewRepetition.setText(getResources().getString(R.string.everyDay));  //每天
                         alarmmaster.setRepetition(getResources().getString(R.string.everyDay));
+                        TimeTipSet();   //重新设置提示时间
                     }
                 });
                 customDialog.setOnCustomTimeClickListener(new CustomDialog.onCustomTimeClickListener() {
@@ -181,6 +183,7 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                     public void onCustomTimeClick(String custom) {
                         textViewRepetition.setText(custom);
                         alarmmaster.setRepetition(custom);
+                        TimeTipSet();   //重新设置提示时间
                     }
                 });
                 //设置弹出位置
@@ -241,16 +244,41 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
                 textViewTimeTip.setText(String.format(getResources().getString(R.string.afternoon),minute));//中午12:xx闹钟响
             }
         }else {
-            //计算出小时和分钟
-            int[] time = Utils.TimeCalculate(numberPickerRoughTime.getValue(),numberPickerHour.getValue(),numberPickerMinute.getValue());
-            if(time[0] == 0){    //剩余0小时
-                if(time[1] == 0){    //剩余0分钟
-                    textViewTimeTip.setText(getResources().getString(R.string.lessThanOneMinute));//不到1分钟后闹钟响
-                }else {
-                    textViewTimeTip.setText(String.format(getResources().getString(R.string.justMinute),time[1]));//xx分钟后闹钟响
-                }
+            //计算出小时和分钟，先判断重复周期
+            int[] time;
+            if(!(textViewRepetition.getText().toString().equals("每天") || textViewRepetition.getText().toString().equals("不重复"))){
+                time = Utils.result2array(Utils.TimeCalculate(numberPickerRoughTime.getValue(),numberPickerHour.getValue(),numberPickerMinute.getValue(),textViewRepetition.getText().toString()));  //自定义重复周期
             }else {
-                textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTime),time[0],time[1]));//xx小时xx分钟后闹钟响
+                time = Utils.result2array(Utils.TimeCalculate(numberPickerRoughTime.getValue(),numberPickerHour.getValue(),numberPickerMinute.getValue()));  //“不重复”或者“每天”
+            }
+            if(time[0] == 0){    //剩余0天
+                if(time[1] == 0){    //剩余0小时
+                    if(time[2] == 0){    //剩余0分钟
+                        textViewTimeTip.setText(getResources().getString(R.string.lessThanOneMinute));//不到1分钟后闹钟响
+                    }else {
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.justMinute),time[2]));//xx分钟后闹钟响
+                    }
+                }else {    //剩余xx小时
+                    if(time[2] == 0){    //剩余0分钟
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.justHour),time[1]));//xx小时后闹钟响
+                    }else {
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTime),time[1],time[2]));//xx小时xx分钟后闹钟响
+                    }
+                }
+            }else {    //剩余xx天
+                if(time[1] == 0){
+                    if(time[2] == 0){
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.justDay),time[0]));//xx天后闹钟响
+                    }else{
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTimeWithDayNoHour),time[0], time[2]));//xx天xx分钟后闹钟响
+                    }
+                }else {   //剩余xx小时
+                    if(time[2] == 0){
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTimeWithDayNoMinute),time[0],time[1]));//xx天xx小时后闹钟响
+                    }else{
+                        textViewTimeTip.setText(String.format(getResources().getString(R.string.clockTimeWithDay),time[0], time[1], time[2])); //xx天xx小时xx分钟后闹钟响
+                    }
+                }
             }
         }
     }
@@ -276,9 +304,17 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
     //完成“新建闹钟”或者“编辑闹钟”
     public void NewClockComplete(){
         if(numberPickerRoughTime.getValue() == 0){
-            alarmmaster.setHour(numberPickerHour.getValue()+1);
+            if(numberPickerHour.getValue() == 11){
+                alarmmaster.setHour(0);
+            }else {
+                alarmmaster.setHour(numberPickerHour.getValue()+1);
+            }
         }else {
-            alarmmaster.setHour(numberPickerHour.getValue()+13);
+            if(numberPickerHour.getValue() == 11){
+                alarmmaster.setHour(12);
+            }else {
+                alarmmaster.setHour(numberPickerHour.getValue()+13);
+            }
         }
         alarmmaster.setMinute(numberPickerMinute.getValue());
         alarmmaster.setRepetition(textViewRepetition.getText().toString());
@@ -286,6 +322,25 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
         alarmmaster.setTag(textViewTag.getText().toString());
         alarmmaster.setShake(Utils.boolean2int(switchShake.isChecked()));
         alarmmaster.setStatus(1);             //刚编辑好的闹钟默认为打开状态
+        //alarmmaster.save();
+        Intent intent = new Intent();
+        intent.putExtra("editClock",alarmmaster);
+        if(getIntent().getIntExtra("position",-1) != -1){
+            //有位置参数表示是修改闹钟
+            alarmmaster.update(alarmmaster.getId());      //修改数据库中的值
+            intent.putExtra("backPosition",getIntent().getIntExtra("position",-1));
+            setResult(2,intent);
+        }else {
+            //没有则表示新建闹钟
+//            Log.d("NewClock","新建闹钟");
+//            Log.d("NewClock",String.valueOf(alarmmaster.getHour()));
+            alarmmaster.save();
+            setResult(1,intent);
+        }
+        //完成闹钟编辑的同时，默认闹钟开启，启动闹钟服务
+        //使用starService，通过服务启动闹钟，同时达到报活效果
+        //代码 待编写
+        finish();
     }
     @Override
     protected void onDestroy() {
