@@ -50,7 +50,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             //alarmmaster.update(alarmmaster.getId());  //一次性闹钟响铃完毕，更改闹钟状态为关闭，并修改数据库
         }else {
             Utils.setAlarmTime(context,alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),intent1);
-            //Utils.TimeCalculate(roughTime,)
+            //Utils.TimeCalculate(roughTime,)//
             //2018.2.26
             //2018.3.1完成
         }
