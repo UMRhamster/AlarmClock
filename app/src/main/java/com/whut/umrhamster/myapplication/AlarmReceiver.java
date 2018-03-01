@@ -32,10 +32,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(new long[]{600,1000,600,1000,600,1000},-1);
 
+        Intent intent1 = new Intent(context,AlarmReceiver.class);
+        intent1.setAction("com.whut.umrhamster.alarmclock");
+        intent1.putExtra("clockAlarm",alarmmaster);
+
         if(alarmmaster.getRepetition().equals("每天")){
-            Intent intent1 = new Intent(context,AlarmReceiver.class);
-            intent1.setAction("com.whut.umrhamster.alarmclock");
-            intent1.putExtra("clockAlarm",alarmmaster);
             Utils.setAlarmTime(context,alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),intent1);
         }else if(alarmmaster.getRepetition().equals("不重复")){
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
@@ -48,19 +49,10 @@ public class AlarmReceiver extends BroadcastReceiver {
             //alarmmaster.save();
             //alarmmaster.update(alarmmaster.getId());  //一次性闹钟响铃完毕，更改闹钟状态为关闭，并修改数据库
         }else {
-            Intent intent2 = new Intent(context,AlarmReceiver.class);
-            intent2.setAction("com.whut.umrhamster.alarmclock");
-            intent2.putExtra("clockAlarm",alarmmaster);
-            int roughTime;
-            int hour;
-            if(alarmmaster.getHour() < 12){
-                roughTime = 0;
-            }else {
-                roughTime = 1;
-                hour = alarmmaster.getHour() - 12;
-            }
+            Utils.setAlarmTime(context,alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),intent1);
             //Utils.TimeCalculate(roughTime,)
             //2018.2.26
+            //2018.3.1完成
         }
     }
 }
