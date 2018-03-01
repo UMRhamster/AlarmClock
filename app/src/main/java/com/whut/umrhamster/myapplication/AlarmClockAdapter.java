@@ -51,7 +51,7 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        //Log.d("222222222222","bvhooooooolder"+String.valueOf(position));
+        Log.d("222222222222","bvhooooooolder"+String.valueOf(position));
         final Alarmmaster alarmmaster = alarmmasterList.get(position);
         holder.textViewRoughTime.setText(Utils.getRoughTime(alarmmaster.getHour()));
         holder.textViewExactTime.setText(Utils.getExactTime(alarmmaster.getHour(),alarmmaster.getMinute()));
@@ -75,11 +75,20 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
                 Intent intent = new Intent(context,AlarmReceiver.class);
                 intent.setAction("com.whut.umrhamster.alarmclock");
                 intent.putExtra("clockAlarm",alarmmasterList.get(position));
-
                 if(b){
+                    Log.d("AlarmClockAdapter","启动闹钟id："+alarmmaster.getId());
+                    alarmmaster.setStatus(1);
+                    alarmmaster.save();
                     Utils.setAlarmTime(context,alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),intent);
                 }else {
-                    //context.stopService(intent);
+                    Log.d("AlarmClockAdapter","取消闹钟id："+alarmmaster.getId());
+                    //取消闹钟广播
+                    alarmmaster.setStatus(0);
+                    alarmmaster.save();
+                    //使用update更新数据无效
+                    //alarmmaster.update(alarmmaster.getId());
+                    AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.cancel(PendingIntent.getBroadcast(context,alarmmaster.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT));
                 }
             }
         });
@@ -128,16 +137,6 @@ public class AlarmClockAdapter extends RecyclerView.Adapter<AlarmClockAdapter.Vi
                 isShow = true;
             }
             alarmmasterCheck.set((int)view.getTag(),true);
-            /////////////暂时这样处理//////////////////////////////////////////
-//            alarmmasterCheck = new ArrayList<>();                           //
-//            for(int i=0;i<alarmmasterList.size();i++){                      //
-//                if(i == (int)view.getTag()){                                //
-//                    alarmmasterCheck.add(true);     //长按条目直接为选中状态 //
-//                }else {                                                     //
-//                    alarmmasterCheck.add(false);                            //
-//                }                                                           //
-//            }                                                               //
-            //////////////////////////////////////////////////////////////////
             notifyDataSetChanged();
             ItemClickListener.onItemLongClick(view,(int)view.getTag());
         }

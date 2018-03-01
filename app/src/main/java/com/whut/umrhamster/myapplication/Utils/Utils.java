@@ -251,7 +251,9 @@ public class Utils {
         if(repetition.equals("不重复") || repetition.equals("每天")){
             timeInMillis = toTimeMillis(hour,minute);
         }else {
-            timeInMillis = toTimeMillis(hour,minute);
+            timeInMillis = toTimeMillis(hour,minute,repetition);
+            Log.d("Utils","currentTimeMillis"+System.currentTimeMillis());
+            Log.d("Utils","time custom_repetition"+timeInMillis);
         }
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, id, intent, PendingIntent.FLAG_UPDATE_CURRENT);
@@ -279,19 +281,18 @@ public class Utils {
     public static long toTimeMillis(int hour, int minute, String repetition){
         Calendar calendar = Calendar.getInstance();
         long currentTimeMillis = calendar.getTimeInMillis();
-        //calendar.set(Calendar.DAY_OF_WEEK,);
-        calendar.set(Calendar.HOUR_OF_DAY,hour);
-        calendar.set(Calendar.MINUTE,minute);
-        calendar.set(Calendar.SECOND,0);
-        calendar.set(Calendar.MILLISECOND,0);
-        long targetTimeMillis = calendar.getTimeInMillis();
-        if(currentTimeMillis < targetTimeMillis){
-
+        long gapTimeMillis;
+        if(hour > 12){
+            gapTimeMillis = TimeCalculate(1,hour-13,minute,repetition);
+        }else if(hour == 12){
+            gapTimeMillis = TimeCalculate(1,11,minute,repetition);
+        }else if(hour > 0){
+            gapTimeMillis = TimeCalculate(0,hour-1,minute,repetition);
+        }else {
+            gapTimeMillis = TimeCalculate(0,11,minute,repetition);
         }
-        repetition = repetition.substring(2,3);
-        if(calendar.get(Calendar.DAY_OF_WEEK) < String2int(repetition))
-        String2int(repetition);
-        return 0;
+        currentTimeMillis += gapTimeMillis;  //直接计算得到下一次闹钟时间
+        return currentTimeMillis;
     }
 
     /*

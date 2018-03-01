@@ -1,8 +1,5 @@
 package com.whut.umrhamster.myapplication;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.litepal.LitePal;
 import org.litepal.crud.DataSupport;
@@ -42,6 +38,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //test
 //        Calendar calendar = Calendar.getInstance();
 //        Log.d("year",String.valueOf(calendar.get(Calendar.YEAR)));
+//        Log.d("hour",""+calendar.get(Calendar.HOUR));
+//        Log.d("hour of day",""+calendar.get(Calendar.HOUR_OF_DAY));
 //        Log.d("month",String.valueOf(calendar.get(Calendar.MONTH)));
 //        Log.d("day",String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
 //        Log.d("day of week", String.valueOf(calendar.get(Calendar.DAY_OF_WEEK)));
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         //初始化
         InitView();
         InitEvents();
-        InitDataFromDataBase();
+        //InitDataFromDataBase();
         alarmClockAdapter.notifyDataSetChanged();
     }
     //初始化视图
@@ -172,11 +170,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //Log.d("a",String.valueOf(a.getHour()));
             alarmmasterList.add((Alarmmaster) data.getSerializableExtra("editClock"));
             alarmListChecked.add(false);
-            alarmClockAdapter.notifyItemChanged(alarmmasterList.size()-1);
+            //alarmClockAdapter.notifyItemChanged(alarmmasterList.size()-1);
         }else if(requestCode == 2 & resultCode == 2){
             int position = data.getIntExtra("backPosition",-1);
             alarmmasterList.set(position,(Alarmmaster) data.getSerializableExtra("editClock"));
-            alarmClockAdapter.notifyItemChanged(position);
+            //alarmClockAdapter.notifyItemChanged(position);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d("MainActivity","onResume");
+        alarmmasterList.clear();
+        alarmListChecked.clear();
+        InitDataFromDataBase();
+        alarmClockAdapter.notifyDataSetChanged();
     }
 }

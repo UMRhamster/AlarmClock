@@ -337,6 +337,12 @@ public class NewClockActivity extends AppCompatActivity implements NumberPicker.
             alarmmaster.save();
             setResult(1,intent);
         }
+        //默认开启闹钟
+        Log.d("NewClockActivity","默认开启闹钟id:"+alarmmaster.getId());
+        Intent i = new Intent(this,AlarmReceiver.class);
+        i.setAction("com.whut.umrhamster.alarmclock");
+        i.putExtra("clockAlarm",alarmmaster);
+        Utils.setAlarmTime(getApplicationContext(),alarmmaster.getHour(),alarmmaster.getMinute(),alarmmaster.getRepetition(),alarmmaster.getId(),i);
         //完成闹钟编辑的同时，默认闹钟开启，启动闹钟服务
         //使用starService，通过服务启动闹钟，同时达到报活效果
         //代码 待编写

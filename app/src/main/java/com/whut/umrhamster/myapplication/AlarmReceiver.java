@@ -10,6 +10,8 @@ import android.util.Log;
 
 import com.whut.umrhamster.myapplication.Utils.Utils;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by 12421 on 2018/2/8.
  */
@@ -23,7 +25,8 @@ public class AlarmReceiver extends BroadcastReceiver {
                 +"hour:"+alarmmaster.getHour()
                 +"minute:"+alarmmaster.getMinute()
                 +"repetition:"+alarmmaster.getRepetition()
-                +"tag:"+alarmmaster.getTag());
+                +"tag:"+alarmmaster.getTag()
+                +"status"+alarmmaster.getStatus());
         Intent i = new Intent(context,AlarmService.class);
         context.startService(i);
         Vibrator vibrator = (Vibrator)context.getSystemService(Context.VIBRATOR_SERVICE);
@@ -37,10 +40,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         }else if(alarmmaster.getRepetition().equals("不重复")){
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.cancel(PendingIntent.getBroadcast(context,alarmmaster.getId(),intent,PendingIntent.FLAG_UPDATE_CURRENT));
-            alarmmaster.setStatus(0);
-            alarmmaster.update(alarmmaster.getId());  //一次性闹钟响铃完毕，更改闹钟状态为关闭，并修改数据库
-            //主界面的闹钟列表开关暂时无法控制
-            //。。。。。。
+            //修改数据库中的值
+            Alarmmaster a = DataSupport.find(Alarmmaster.class,alarmmaster.getId());
+            a.setStatus(0);
+            a.save();
+            Log.d("AlarmReceiver",""+alarmmaster.getId());
+            //alarmmaster.save();
+            //alarmmaster.update(alarmmaster.getId());  //一次性闹钟响铃完毕，更改闹钟状态为关闭，并修改数据库
         }else {
             Intent intent2 = new Intent(context,AlarmReceiver.class);
             intent2.setAction("com.whut.umrhamster.alarmclock");
